@@ -9,7 +9,7 @@ coreschema==0.0.4
 cryptography==39.0.1
 defusedxml==0.7.1
 distlib==0.3.6
-Django==4.1.5
+Django==4.1.7
 django-appconf==1.0.5
 django-configurations==2.4
 django-cors-headers==3.13.0
