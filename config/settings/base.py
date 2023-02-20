@@ -139,7 +139,7 @@ class Base(Configuration):
         "navigation_expanded": True,
 
         # Hide these apps when generating side menu e.g (auth)
-        # "hide_apps": ["auth"],
+        "hide_apps": ["auth"],
 
         # Hide these models when generating side menu (e.g auth.user)
         "hide_models": [],

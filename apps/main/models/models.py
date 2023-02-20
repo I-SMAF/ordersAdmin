@@ -22,6 +22,27 @@ class Source(models.Model):
         return self.__str__()
 
 
+class City(models.Model):
+    """
+    Модель источника заказа
+    """
+
+    class Meta:
+        verbose_name = 'Город'
+        verbose_name_plural = 'Города'
+
+    name = models.CharField(
+        verbose_name='название',
+        max_length=256
+    )
+
+    def __str__(self) -> str:
+        return f'{self.name}'
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+
 class Status(models.TextChoices):
     """
     TextChoices статусы
@@ -58,6 +79,12 @@ class Order(models.Model):
         on_delete=models.DO_NOTHING,
         related_name='orders'
     )
+    city = models.ForeignKey(
+        to=City,
+        verbose_name='город',
+        on_delete=models.DO_NOTHING,
+        related_name='orders'
+    )
     price = models.PositiveIntegerField(  # null_by_design
         verbose_name='цена',
         default=0,
@@ -72,11 +99,6 @@ class Order(models.Model):
         verbose_name='номер телефона заказчика',
         max_length=256
     )
-    address = models.CharField(
-        verbose_name='адрес заказа',
-        max_length=256
-    )
-
     date = models.DateField(
         verbose_name='конечная дата заказа',
     )

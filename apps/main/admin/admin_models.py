@@ -6,7 +6,7 @@ from django.shortcuts import render
 
 from apps.main.admin.forms import ChangeStatusForm
 from apps.main.models.models import Element, Order, StatusStory, Source, CheckingOrder, ComplianceOrder, LoadingOrder, \
-    ReturnOrder, Status
+    ReturnOrder, Status, City
 
 
 class StatusStoryInline(admin.TabularInline):
@@ -60,10 +60,17 @@ class SourceAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
 
 
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
+    ordering = ('name',)
+    list_display = ('name',)
+    list_display_links = ('name',)
+
+
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     ordering = ('number',)
-    list_filter = ('source',)
+    list_filter = ('city',)
     fieldsets: list[tuple[str, object]] = [
         (
             'Внешние данные',
@@ -75,7 +82,7 @@ class OrderAdmin(admin.ModelAdmin):
                         'price',
                         'customers_name',
                         'customers_phone',
-                        'address',
+                        'city',
 
                     )
             },
@@ -93,14 +100,14 @@ class OrderAdmin(admin.ModelAdmin):
             },
         ),
     ]
-    list_display = ('number', 'address', 'date', 'status')
-    list_display_links = ('number', 'address', 'date', 'status')
+    list_display = ('number', 'city', 'date', 'status')
+    list_display_links = ('number', 'city', 'date', 'status')
     inlines = (ElementInline, StatusStoryInline)
 
 
 @admin.register(CheckingOrder)
 class CheckingOrderAdmin(admin.ModelAdmin):
-    list_filter = ('source',)
+    list_filter = ('city',)
     ordering = ('number',)
     fieldsets: list[tuple[str, object]] = [
         (
@@ -114,7 +121,7 @@ class CheckingOrderAdmin(admin.ModelAdmin):
                         'price',
                         'customers_name',
                         'customers_phone',
-                        'address',
+                        'city',
 
                     )
             },
@@ -136,13 +143,13 @@ class CheckingOrderAdmin(admin.ModelAdmin):
                        'price',
                        'customers_name',
                        'customers_phone',
-                       'address',
+                       'city',
                        'date',
                        'delivery_price',
                        'order_comment',
                        )
-    list_display = ('number', 'address', 'date', 'status')
-    list_display_links = ('number', 'address', 'date', 'status')
+    list_display = ('number', 'city', 'date', 'status')
+    list_display_links = ('number', 'city', 'date', 'status')
     inlines = (ElementViewInline, StatusStoryInline)
     actions = ('change_status', 'return_order')
 
@@ -225,7 +232,7 @@ class CheckingOrderAdmin(admin.ModelAdmin):
 
 @admin.register(ComplianceOrder)
 class ComplianceOrderAdmin(admin.ModelAdmin):
-    list_filter = ('source',)
+    list_filter = ('city',)
     ordering = ('number',)
     fieldsets: list[tuple[str, object]] = [
         (
@@ -239,7 +246,7 @@ class ComplianceOrderAdmin(admin.ModelAdmin):
                         'price',
                         'customers_name',
                         'customers_phone',
-                        'address',
+                        'city',
 
                     )
             },
@@ -262,13 +269,13 @@ class ComplianceOrderAdmin(admin.ModelAdmin):
                        'price',
                        'customers_name',
                        'customers_phone',
-                       'address',
+                       'city',
                        'date',
                        'delivery_price',
                        'order_comment',
                        )
-    list_display = ('number', 'address', 'date', 'status')
-    list_display_links = ('number', 'address', 'date', 'status')
+    list_display = ('number', 'city', 'date', 'status')
+    list_display_links = ('number', 'city', 'date', 'status')
     inlines = (ElementViewInline, StatusStoryInline)
     actions = ('change_status', 'return_order')
 
@@ -350,7 +357,7 @@ class ComplianceOrderAdmin(admin.ModelAdmin):
 
 @admin.register(LoadingOrder)
 class LoadingOrderAdmin(admin.ModelAdmin):
-    list_filter = ('source',)
+    list_filter = ('city',)
     ordering = ('number',)
     fieldsets: list[tuple[str, object]] = [
         (
@@ -364,7 +371,7 @@ class LoadingOrderAdmin(admin.ModelAdmin):
                         'price',
                         'customers_name',
                         'customers_phone',
-                        'address',
+                        'city',
 
                     )
             },
@@ -387,13 +394,13 @@ class LoadingOrderAdmin(admin.ModelAdmin):
                        'price',
                        'customers_name',
                        'customers_phone',
-                       'address',
+                       'city',
                        'date',
                        'delivery_price',
                        'order_comment',
                        )
-    list_display = ('number', 'delivery_position', 'address', 'date', 'status')
-    list_display_links = ('number', 'address', 'date', 'status')
+    list_display = ('number', 'delivery_position', 'city', 'date', 'status')
+    list_display_links = ('number', 'city', 'date', 'status')
     inlines = (ElementViewInline, StatusStoryInline)
     actions = ('return_order',)
 
@@ -444,7 +451,7 @@ class LoadingOrderAdmin(admin.ModelAdmin):
 
 @admin.register(ReturnOrder)
 class ReturnOrderAdmin(admin.ModelAdmin):
-    list_filter = ('source',)
+    list_filter = ('city',)
     ordering = ('number',)
     fieldsets: list[tuple[str, object]] = [
         (
@@ -458,7 +465,7 @@ class ReturnOrderAdmin(admin.ModelAdmin):
                         'price',
                         'customers_name',
                         'customers_phone',
-                        'address',
+                        'city',
 
                     )
             },
@@ -481,14 +488,14 @@ class ReturnOrderAdmin(admin.ModelAdmin):
                        'price',
                        'customers_name',
                        'customers_phone',
-                       'address',
+                       'city',
                        'date',
                        'delivery_price',
                        'delivery_position',
                        'order_comment',
                        )
-    list_display = ('number', 'address', 'date', 'status')
-    list_display_links = ('number', 'address', 'date', 'status')
+    list_display = ('number', 'city', 'date', 'status')
+    list_display_links = ('number', 'city', 'date', 'status')
     inlines = (ElementViewInline, StatusStoryInline)
 
     def has_add_permission(self, request: WSGIRequest) -> bool:
