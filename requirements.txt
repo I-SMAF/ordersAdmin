@@ -61,4 +61,3 @@ urllib3==1.26.14
 virtualenv==20.19.0
 XlsxWriter==3.0.8
 mypy
-flake8
