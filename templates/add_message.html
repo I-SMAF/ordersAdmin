@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+    <form action="" method="post">{% csrf_token %}
+
+        <p>Новая категория будет назначена для следующих позиций:</p>
+        {% for form, element in forms %}
+            <h5 class="m-1">Заказ: {{ element }}</h5>
+            <div style="margin-bottom: 1rem;">
+                {% for element in form %}
+                    {% if element.label != 'hidden' %}
+                        <h6 class="m-0">{{ element.label }}</h6>
+                        <div style="margin-bottom: 1rem;">
+                            {{ element }}<br>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <br>
+        {% endfor %}
+        <input type="hidden" name="action" value={{ action }}/>
+        <input type="submit" class="btn btn-xs btn-warning" name="apply" value="Сохранить"/>
+    </form>
+{% endblock %}
