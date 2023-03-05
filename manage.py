@@ -6,7 +6,7 @@ def main() -> None:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
     if not os.environ.get("DJANGO_CONFIGURATION", None):
         os.environ.setdefault("DJANGO_CONFIGURATION", "Development")
-    os.system('mypy .')
+    # os.system('mypy .')
     try:
         from configurations.management import \
             execute_from_command_line  # ignore

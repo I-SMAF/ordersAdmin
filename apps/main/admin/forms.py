@@ -24,6 +24,6 @@ class ChangeGlobalStatusForm(ChangeStatusForm):
         label=mark_safe('Статус заказа'),
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: tuple, **kwargs: dict) -> None:
         super().__init__(*args, **kwargs)
         self.fields['status'].widget.attrs['class'] = 'selection'

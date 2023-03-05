@@ -3,15 +3,15 @@ from django.db import models
 
 class Source(models.Model):
     """
-    Модель источника заказа
+    Модель Источника Заказа
     """
 
     class Meta:
-        verbose_name = 'источник заказа'
-        verbose_name_plural = 'источники заказов'
+        verbose_name = 'Источник заказа'
+        verbose_name_plural = 'Источники заказов'
 
     name = models.CharField(
-        verbose_name='название',
+        verbose_name='Название',
         max_length=256
     )
 
@@ -24,7 +24,7 @@ class Source(models.Model):
 
 class City(models.Model):
     """
-    Модель источника заказа
+    Модель Источника Заказа
     """
 
     class Meta:
@@ -32,7 +32,7 @@ class City(models.Model):
         verbose_name_plural = 'Города'
 
     name = models.CharField(
-        verbose_name='название',
+        verbose_name='Город',
         max_length=256
     )
 
@@ -48,10 +48,11 @@ class Status(models.TextChoices):
     TextChoices статусы
     """
 
-    CHECKING = 'checking', 'проверка наличия (склад)'
-    COMPLIANCE = 'compliance', 'проверка логистического соответствия'
-    LOADING = 'loading', 'погрузка'
-    RETURN = 'return', 'возврат'
+    CHECKING = 'checking', 'Проверка наличия (склад)'
+    COMPLIANCE = 'compliance', 'Проверка логистического соответствия'
+    LOADING = 'loading', 'Погрузка'
+    RETURN = 'return', 'Возврат'
+    SENT = 'sent', 'Отправлено'
 
 
 class Order(models.Model):
@@ -60,62 +61,67 @@ class Order(models.Model):
     """
 
     class Meta:
-        verbose_name = 'заказ'
-        verbose_name_plural = 'заказы'
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Заказы'
 
     status = models.CharField(
-        verbose_name='статус заказа',
+        verbose_name='Статус заказа',
         max_length=256,
         choices=Status.choices,
         default=Status.CHECKING
     )
     number = models.CharField(
-        verbose_name='номер заказа',
+        verbose_name='Номер заказа',
         max_length=256
     )
     source = models.ForeignKey(
         to=Source,
-        verbose_name='источник заказа',
+        verbose_name='Источник заказа',
         on_delete=models.DO_NOTHING,
         related_name='orders'
     )
     city = models.ForeignKey(
         to=City,
-        verbose_name='город',
+        verbose_name='Город',
         on_delete=models.DO_NOTHING,
         related_name='orders'
     )
     price = models.PositiveIntegerField(  # null_by_design
-        verbose_name='цена',
+        verbose_name='Цена',
         default=0,
         null=True,
         blank=True
     )
     customers_name = models.CharField(
-        verbose_name='имя заказчика',
+        verbose_name='Имя заказчика',
         max_length=256
     )
     customers_phone = models.CharField(
-        verbose_name='номер телефона заказчика',
+        verbose_name='Номер телефона заказчика',
         max_length=256
     )
     date = models.DateField(
-        verbose_name='конечная дата заказа',
+        verbose_name='Конечная дата заказа',
     )
     delivery_price = models.PositiveIntegerField(  # null_by_design
-        verbose_name='цена доставки',
+        verbose_name='Цена доставки',
         default=0,
         null=True,
         blank=True
     )
     delivery_position = models.SmallIntegerField(  # null_by_design
-        verbose_name='позиция погрузки',
+        verbose_name='Позиция погрузки',
         default=0,
         null=True,
         blank=True
     )
     order_comment = models.TextField(  # null_by_design
-        verbose_name='комментарий заказа',
+        verbose_name='Комментарий заказа',
+        null=True,
+        blank=True
+    )
+    logic_slots = models.PositiveIntegerField(
+        verbose_name='Кол-во логистических мест',
         null=True,
         blank=True
     )
@@ -134,8 +140,8 @@ class CheckingOrder(Order):
 
     class Meta:
         proxy = True
-        verbose_name = 'заказ'
-        verbose_name_plural = f'заказы - проверка наличия (склад)'
+        verbose_name = 'Заказ'
+        verbose_name_plural = f'Заказы - проверка наличия (склад)'
 
 
 class ComplianceOrder(Order):
@@ -145,8 +151,8 @@ class ComplianceOrder(Order):
 
     class Meta:
         proxy = True
-        verbose_name = 'заказ'
-        verbose_name_plural = f'заказы - проверка логистического соответствия'
+        verbose_name = 'Заказ'
+        verbose_name_plural = f'Заказы - проверка логистического соответствия'
 
 
 class LoadingOrder(Order):
@@ -156,8 +162,8 @@ class LoadingOrder(Order):
 
     class Meta:
         proxy = True
-        verbose_name = 'заказ'
-        verbose_name_plural = f'заказы - погрузка'
+        verbose_name = 'Заказ'
+        verbose_name_plural = f'Заказы - погрузка'
 
 
 class ReturnOrder(Order):
@@ -167,8 +173,19 @@ class ReturnOrder(Order):
 
     class Meta:
         proxy = True
-        verbose_name = 'заказ'
-        verbose_name_plural = f'заказы - возврат'
+        verbose_name = 'Заказ'
+        verbose_name_plural = f'Заказы - возврат'
+
+
+class SentOrder(Order):
+    """
+    Proxy Модель заказа
+    """
+
+    class Meta:
+        proxy = True
+        verbose_name = 'Заказ'
+        verbose_name_plural = f'Заказы - отправлено'
 
 
 class Element(models.Model):
@@ -177,22 +194,26 @@ class Element(models.Model):
     """
 
     class Meta:
-        verbose_name = 'товар'
-        verbose_name_plural = 'товары'
+        verbose_name = 'Товар'
+        verbose_name_plural = 'Товары'
 
     amount = models.PositiveSmallIntegerField(
-        verbose_name='количество',
+        verbose_name='Количество',
         default=0
     )
     name = models.CharField(
-        verbose_name='название',
+        verbose_name='Название',
         max_length=256
     )
     order = models.ForeignKey(
         to=Order,
-        verbose_name='заказ',
+        verbose_name='Заказ',
         on_delete=models.CASCADE,
         related_name='elements'
+    )
+    weight = models.FloatField(
+        verbose_name='Вес (кг)',
+        default=0.0
     )
 
     def __str__(self) -> str:
@@ -208,22 +229,22 @@ class StatusStory(models.Model):
     """
 
     class Meta:
-        verbose_name = 'история статуса'
-        verbose_name_plural = 'история статусов'
+        verbose_name = 'История статуса'
+        verbose_name_plural = 'История статусов'
 
     status = models.CharField(
-        verbose_name='статус заказа',
+        verbose_name='Статус заказа',
         max_length=256,
         choices=Status.choices
     )
     order_comment = models.TextField(
-        verbose_name='комментарий',
+        verbose_name='Комментарий',
         null=True,
         blank=True
     )
     order = models.ForeignKey(
         to=Order,
-        verbose_name='заказ',
+        verbose_name='Заказ',
         on_delete=models.CASCADE,
         related_name='status_story'
     )
