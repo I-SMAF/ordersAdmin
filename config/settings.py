@@ -51,6 +51,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+
 JAZZMIN_SETTINGS: dict[str, Any] = {
     "show_ui_builder": False,
     # title of the window (Will default to current_admin_site.site_title if absent or None)
@@ -157,7 +158,8 @@ JAZZMIN_SETTINGS: dict[str, Any] = {
         "auth.User": "fas fa-user",
         "auth.Group": "fas fa-users",
         "main.source": "fas fa-people-arrows",
-        "main.order": "fas fa-boxes",
+        "main.order": "fas fa-list",
+        "main.workorder": "fas fa-boxes",
         "main.checkingorder": "fas fa-clipboard-check",
         "main.complianceorder": "fas fa-traffic-light",
         "main.loadingorder": "fas fa-shipping-fast",
@@ -169,6 +171,7 @@ JAZZMIN_SETTINGS: dict[str, Any] = {
         "main.source",
         "main.city",
         "main.order",
+        "main.workorder"
         "main.checkingorder",
         "main.complianceorder",
         "main.loadingorder",
@@ -211,7 +214,6 @@ JAZZMIN_SETTINGS: dict[str, Any] = {
     # "changeform_format_overrides": {"auth.user": "horizontal_tabs", "auth.group": "horizontal_tabs"},
 
 }
-
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
     "footer_small_text": False,
