@@ -1,6 +1,6 @@
 import os.path
 from pathlib import Path
-from typing import Any, List
+from typing import List
 
 DEBUG = True
 
@@ -52,7 +52,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-JAZZMIN_SETTINGS: dict[str, Any] = {
+JAZZMIN_SETTINGS = {
     "show_ui_builder": False,
     # title of the window (Will default to current_admin_site.site_title if absent or None)
     "site_title": site_name,
