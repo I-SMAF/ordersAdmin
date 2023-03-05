@@ -7,7 +7,7 @@ from django.shortcuts import render
 
 from apps.main.admin.forms import ChangeStatusForm
 from apps.main.models.models import Element, Order, StatusStory, Source, CheckingOrder, ComplianceOrder, LoadingOrder, \
-    ReturnOrder, Status, City, SentOrder
+    ReturnOrder, Status, City, SentOrder, WorkOrder
 
 
 class StatusStoryInline(admin.TabularInline):
@@ -111,6 +111,17 @@ class OrderAdmin(admin.ModelAdmin):
         return str(sum(
             map(lambda element: element[0] * element[1], list(obj.elements.values_list('weight', 'amount')))
         )).replace('.', ',')
+
+
+@admin.register(WorkOrder)
+class OrderAdmin(OrderAdmin):
+
+    def get_queryset(self, request: WSGIRequest) -> QuerySet[Order]:
+        qs = self.model._default_manager.get_queryset().exclude(status=Status.SENT)
+        ordering = self.get_ordering(request)
+        if ordering:
+            qs = qs.order_by(*ordering)
+        return qs
 
 
 class StatusOrderAdmin(OrderAdmin):

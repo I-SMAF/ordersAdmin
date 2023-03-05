@@ -133,6 +133,17 @@ class Order(models.Model):
         return self.__str__()
 
 
+class WorkOrder(Order):
+    """
+    Proxy Модель заказа
+    """
+
+    class Meta:
+        proxy = True
+        verbose_name = 'Заказ'
+        verbose_name_plural = f'Заказы в работе'
+
+
 class CheckingOrder(Order):
     """
     Proxy Модель заказа
