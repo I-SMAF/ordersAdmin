@@ -2,14 +2,16 @@ import os
 import sys
 
 
+
 def main() -> None:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
     if not os.environ.get("DJANGO_CONFIGURATION", None):
         os.environ.setdefault("DJANGO_CONFIGURATION", "Development")
     # os.system('mypy .')
     try:
-        from configurations.management import \
-            execute_from_command_line  # ignore
+        from django.core.management import execute_from_command_line
+        # from configurations.management import \
+        #     execute_from_command_line  # ignore
     except ImportError as exc:
         raise ImportError(
             "Couldn't import Django. Are you sure it's installed and "
