@@ -18,13 +18,13 @@ class StatusStoryInline(admin.TabularInline):
     fields = ('status', 'order_comment',)
     readonly_fields = fields
 
-    def has_add_permission(self, request: WSGIRequest, obj: StatusStory and None = None) -> bool:
+    def has_add_permission(self, request: WSGIRequest, obj: StatusStory or None = None) -> bool:
         return False
 
-    def has_delete_permission(self, request: WSGIRequest, obj: StatusStory and None = None) -> bool:
+    def has_delete_permission(self, request: WSGIRequest, obj: StatusStory or None = None) -> bool:
         return False
 
-    def has_change_permissionn(self, request: WSGIRequest, obj: StatusStory and None = None) -> bool:
+    def has_change_permissionn(self, request: WSGIRequest, obj: StatusStory or None = None) -> bool:
         return False
 
 
@@ -43,10 +43,10 @@ class ElementViewInline(ElementInline):
     def has_add_permission(self, request: WSGIRequest, obj: StatusStory) -> bool:
         return False
 
-    def has_delete_permission(self, request: WSGIRequest, obj: Order and None = None) -> bool:
+    def has_delete_permission(self, request: WSGIRequest, obj: Order or None = None) -> bool:
         return False
 
-    def has_change_permissionn(self, request: WSGIRequest, obj: Order and None = None) -> bool:
+    def has_change_permissionn(self, request: WSGIRequest, obj: Order or None = None) -> bool:
         return False
 
 
@@ -68,7 +68,7 @@ class CityAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     list_filter = ('city__name',)
     ordering = ('date',)
-    fieldsets = [
+    fieldsets: list[tuple[str, object]] = [
         (
             'Внешние данные',
             {
@@ -149,7 +149,7 @@ class StatusOrderAdmin(OrderAdmin):
     def has_add_permission(self, request: WSGIRequest) -> bool:
         return False
 
-    def has_delete_permission(self, request: WSGIRequest, obj: Order and None = None) -> bool:
+    def has_delete_permission(self, request: WSGIRequest, obj: Order or None = None) -> bool:
         return False
 
     @admin.action(description='Вернуть заказ(ы)')
@@ -157,8 +157,8 @@ class StatusOrderAdmin(OrderAdmin):
             modeladmin,
             request: WSGIRequest,
             queryset: QuerySet[Order]
-    ) -> HttpResponseRedirect and HttpResponse:
-        forms = []
+    ) -> HttpResponseRedirect or HttpResponse:
+        forms: list[list] = []
 
         if 'apply' in request.POST:
             count = 0
@@ -186,7 +186,7 @@ class StatusOrderAdmin(OrderAdmin):
             modeladmin,
             request: WSGIRequest,
             queryset: QuerySet[Order]
-    ) -> HttpResponseRedirect and HttpResponse:
+    ) -> HttpResponseRedirect or HttpResponse:
         forms = []
 
         print(request.POST)

@@ -33,8 +33,8 @@ DATABASES = {
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 ROOT_URLCONF = "config.urls"
 STATICFILES_DIRS: List[str] = []
-STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = "static/"
 
 LANGUAGE_CODE = "ru-RU"
 LANGUAGES = [

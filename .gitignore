@@ -6,7 +6,8 @@ __pycache__/
 .idea/
 # C extensions
 *.so
-
+static/
+!apps/*/static
 # Distribution / packaging
 .Python
 build/
