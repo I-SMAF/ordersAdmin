@@ -3,6 +3,31 @@ option {
     display: block;
     white-space: nowrap;
     min-height: 1.2em;
-    padding: 0px 2px 1px;
+    padding: 0 2px 1px;
     color: black;
+}
+
+.btn-info {
+    color: #fff;
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.btn-info:not(:disabled):not(.disabled).active, .btn-info:not(:disabled):not(.disabled):active, .show > .btn-info.dropdown-toggle {
+    color: #fff;
+    background-color: #217dbb;
+    border-color: #1f76b0;
+}
+
+.btn-info.focus, .btn-info:focus {
+    color: #fff;
+    background-color: #2384c6;
+    border-color: #217dbb;
+    box-shadow: 0 0 0 0 rgb(82 167 224 / 50%);
+}
+
+.btn-info:hover {
+    color: #fff;
+    background-color: #2384c6;
+    border-color: #217dbb;
 }
