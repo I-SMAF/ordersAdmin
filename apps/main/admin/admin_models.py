@@ -149,6 +149,7 @@ class WorkOrderAdmin(OrderAdmin):
         'elements_names',
         'price',
         'source',
+        'status',
     )
     list_display_links = list_display
 
