@@ -50,7 +50,7 @@ SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE = True
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
-
+logo = 'sabatov.png'
 JAZZMIN_SETTINGS = {
     "show_ui_builder": False,
     # title of the window (Will default to current_admin_site.site_title if absent or None)
@@ -63,13 +63,13 @@ JAZZMIN_SETTINGS = {
     "site_brand": site_name,
 
     # Logo to use for your site, must be present in static files, used for brand on top left
-    "site_logo": None,
+    "site_logo": logo,
 
     # Logo to use for your site, must be present in static files, used for login form logo (defaults to site_logo)
-    "login_logo": None,
+    "login_logo": logo,
 
     # Logo to use for login form in dark themes (defaults to login_logo)
-    "login_logo_dark": None,
+    "login_logo_dark": logo,
 
     # CSS classes that are applied to the logo above
     "site_logo_classes": "img-circle",
@@ -216,7 +216,7 @@ JAZZMIN_UI_TWEAKS = {
     "footer_small_text": False,
     "body_small_text": True,
     "brand_small_text": False,
-    "brand_colour": "navbar-info",
+    "brand_colour": "navbar-dark",
     "accent": "accent-info",
     "navbar": "navbar-dark",
     "no_navbar_border": False,
