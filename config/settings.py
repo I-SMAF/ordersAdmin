@@ -219,15 +219,15 @@ JAZZMIN_UI_TWEAKS = {
     "footer_small_text": False,
     "body_small_text": True,
     "brand_small_text": False,
-    "brand_colour": "my-shit",
-    "accent": "my-shit",
-    "navbar": "my-shit",
+    "brand_colour": "navbar-info",
+    "accent": "accent-info",
+    "navbar": "navbar-dark",
     "no_navbar_border": False,
     "navbar_fixed": False,
     "layout_boxed": False,
     "footer_fixed": False,
     "sidebar_fixed": False,
-    "sidebar": "my-shit",
+    "sidebar": "sidebar-dark-info",
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
     "sidebar_nav_child_indent": True,
@@ -237,12 +237,12 @@ JAZZMIN_UI_TWEAKS = {
     "theme": "cyborg",
     "dark_mode_theme": None,
     "button_classes": {
-        "primary": "my-shit",
-        "secondary": "my-shit",
-        "info": "my-shit",
-        "warning": "my-shit",
-        "danger": "my-shit",
-        "success": "my-shit"
+        "primary": "btn-info",
+        "secondary": "btn-info",
+        "info": "btn-info",
+        "warning": "btn-info",
+        "danger": "btn-info",
+        "success": "btn-info"
     },
     "actions_sticky_top": True
 }
