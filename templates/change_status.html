@@ -3,8 +3,8 @@
 {% block content %}
     <form action="" method="post">{% csrf_token %}
         <p>Новая категория будет назначена для следующих позиций:</p>
-        {% for form, element in forms %}
-            <h5 class="m-1">Заказ: {{ element }}</h5>
+        {% for form, element, number in forms %}
+            <h5 class="m-1">Заказ: {{ number }}</h5>
             <input type="hidden" name="element" value="{{ element }}"/>
             <div style="margin-bottom: 1rem;">
                 {{ form }}
@@ -12,6 +12,6 @@
             <br>
         {% endfor %}
         <input type="hidden" name="action" value="{{ action }}"/>
-        <input type="submit" class="btn btn-xs btn-warning" name="apply" value="Сохранить"/>
+        <input type="submit" class="btn btn-xs btn-info" name="apply" value="Сохранить"/>
     </form>
 {% endblock %}

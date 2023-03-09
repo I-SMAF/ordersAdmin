@@ -80,17 +80,16 @@ class Order(models.Model):
         on_delete=models.DO_NOTHING,
         related_name='orders'
     )
+    address = models.CharField(
+        verbose_name='Адрес заказа',
+        max_length=256,
+        null=True
+    )
     city = models.ForeignKey(
         to=City,
         verbose_name='Город',
         on_delete=models.DO_NOTHING,
         related_name='orders'
-    )
-    price = models.PositiveIntegerField(  # null_by_design
-        verbose_name='Цена',
-        default=0,
-        null=True,
-        blank=True
     )
     customers_name = models.CharField(
         verbose_name='Имя заказчика',
@@ -102,6 +101,16 @@ class Order(models.Model):
     )
     date = models.DateField(
         verbose_name='Конечная дата заказа',
+    )
+    date_from = models.DateField(
+        verbose_name='Дата заказа от',
+        null=True,
+        blank=True,
+    )
+    date_to = models.DateField(
+        verbose_name='Дата заказа до',
+        null=True,
+        blank=True,
     )
     delivery_price = models.PositiveIntegerField(  # null_by_design
         verbose_name='Цена доставки',
@@ -224,6 +233,10 @@ class Element(models.Model):
     )
     weight = models.FloatField(
         verbose_name='Вес (кг)',
+        default=0.0
+    )
+    price = models.FloatField(
+        verbose_name='Цена',
         default=0.0
     )
 
