@@ -32,7 +32,7 @@ DATABASES = {
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 ROOT_URLCONF = "config.urls"
-STATICFILES_DIRS: List[str] = []
+STATICFILES_DIRS: List[str] = [os.path.join(BASE_DIR, 'apps', 'main', 'ststic')]
 STATIC_URL = "/static/"
 STATIC_ROOT = "static/"
 
@@ -194,7 +194,7 @@ JAZZMIN_SETTINGS = {
     # UI Tweaks #
     #############
     # Relative paths to custom CSS/JS scripts (must be present in static files)
-    "custom_css": None,
+    # "custom_css": 'style.css',
     "custom_js": None,
     # Whether to link font from fonts.googleapis.com (use custom_css to supply font otherwise)
     "use_google_fonts_cdn": True,
@@ -219,15 +219,15 @@ JAZZMIN_UI_TWEAKS = {
     "footer_small_text": False,
     "body_small_text": True,
     "brand_small_text": False,
-    "brand_colour": "navbar-warning",
-    "accent": "accent-warning",
-    "navbar": "navbar-dark",
+    "brand_colour": "my-shit",
+    "accent": "my-shit",
+    "navbar": "my-shit",
     "no_navbar_border": False,
     "navbar_fixed": False,
     "layout_boxed": False,
     "footer_fixed": False,
     "sidebar_fixed": False,
-    "sidebar": "sidebar-dark-warning",
+    "sidebar": "my-shit",
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
     "sidebar_nav_child_indent": True,
@@ -237,12 +237,12 @@ JAZZMIN_UI_TWEAKS = {
     "theme": "cyborg",
     "dark_mode_theme": None,
     "button_classes": {
-        "primary": "btn-warning",
-        "secondary": "btn-warning",
-        "info": "btn-warning",
-        "warning": "btn-warning",
-        "danger": "btn-warning",
-        "success": "btn-warning"
+        "primary": "my-shit",
+        "secondary": "my-shit",
+        "info": "my-shit",
+        "warning": "my-shit",
+        "danger": "my-shit",
+        "success": "my-shit"
     },
     "actions_sticky_top": True
 }
