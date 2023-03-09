@@ -219,7 +219,7 @@ class Element(models.Model):
 
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
-        default=0
+        default=1
     )
     name = models.CharField(
         verbose_name='Название',

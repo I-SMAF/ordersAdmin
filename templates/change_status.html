@@ -4,7 +4,7 @@
     <form action="" method="post">{% csrf_token %}
         <p>Новая категория будет назначена для следующих позиций:</p>
         {% for form, element, number in forms %}
-            <h5 class="m-1">Заказ: {{ number }}</h5>
+            <h5 class="m-1">Заказ: {{ number.source }} {{ number.number }} {{ number.city }}</h5>
             <input type="hidden" name="element" value="{{ element }}"/>
             <div style="margin-bottom: 1rem;">
                 {{ form }}
