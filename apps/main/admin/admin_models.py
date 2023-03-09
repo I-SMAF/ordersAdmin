@@ -141,7 +141,16 @@ class OrderAdmin(admin.ModelAdmin):
 
 
 @admin.register(WorkOrder)
-class OrderAdmin(OrderAdmin):
+class WorkOrderAdmin(OrderAdmin):
+    list_display = (
+        'number',
+        'customers_phone',
+        'customers_name',
+        'elements_names',
+        'price',
+        'source',
+    )
+    list_display_links = list_display
 
     def get_queryset(self, request: WSGIRequest) -> QuerySet[Order]:
         qs = self.model._default_manager.get_queryset().exclude(status=Status.SENT)
@@ -318,9 +327,3 @@ class SentOrderAdmin(StatusOrderAdmin):
     status = Status.SENT
     next_status = Status.SENT
     actions = None
-
-#
-# @admin.register(ReturnOrder)
-# class ReturnOrderAdmin(StatusOrderAdmin):
-#     status = Status.RETURN
-#     actions = None
