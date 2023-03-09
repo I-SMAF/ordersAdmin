@@ -130,7 +130,7 @@ class OrderAdmin(admin.ModelAdmin):
     )
     def timings(self, obj: Order) -> str:
         if obj.date_from and obj.date_from:
-            return f"{obj.date_from} - {obj.date_from}"
+            return f"{obj.date_from} - {obj.date_to}"
         return ""
 
     @admin.display(

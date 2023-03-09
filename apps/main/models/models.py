@@ -102,12 +102,12 @@ class Order(models.Model):
     date = models.DateField(
         verbose_name='Конечная дата заказа',
     )
-    date_from = models.DateField(
+    date_from = models.TimeField(
         verbose_name='Дата заказа от',
         null=True,
         blank=True,
     )
-    date_to = models.DateField(
+    date_to = models.TimeField(
         verbose_name='Дата заказа до',
         null=True,
         blank=True,
