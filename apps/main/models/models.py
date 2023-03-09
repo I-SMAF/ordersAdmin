@@ -149,7 +149,7 @@ class WorkOrder(Order):
 
     class Meta:
         proxy = True
-        verbose_name = 'Заказ'
+        verbose_name = 'Заказ в работе'
         verbose_name_plural = f'Заказы в работе'
 
 
@@ -160,7 +160,7 @@ class CheckingOrder(Order):
 
     class Meta:
         proxy = True
-        verbose_name = 'Заказ'
+        verbose_name = 'Заказ проверка наличия (склад)'
         verbose_name_plural = f'Проверка наличия (склад)'
 
 
@@ -171,7 +171,7 @@ class ComplianceOrder(Order):
 
     class Meta:
         proxy = True
-        verbose_name = 'Заказ'
+        verbose_name = 'Заказ проверка логистического соответствия'
         verbose_name_plural = f'Проверка логистического соответствия'
 
 
@@ -182,7 +182,7 @@ class LoadingOrder(Order):
 
     class Meta:
         proxy = True
-        verbose_name = 'Заказ'
+        verbose_name = 'Заказ погрузка'
         verbose_name_plural = f'Погрузка'
 
 
@@ -193,7 +193,7 @@ class ReturnOrder(Order):
 
     class Meta:
         proxy = True
-        verbose_name = 'Заказ'
+        verbose_name = 'Заказ возврат'
         verbose_name_plural = f'Возврат'
 
 
@@ -204,7 +204,7 @@ class SentOrder(Order):
 
     class Meta:
         proxy = True
-        verbose_name = 'Заказ'
+        verbose_name = 'Заказ отправлено'
         verbose_name_plural = f'Отправлено'
 
 
