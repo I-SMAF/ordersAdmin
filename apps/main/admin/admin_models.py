@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.contrib import admin
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import QuerySet
@@ -66,6 +67,15 @@ class CityAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
+    search_fields = (
+        'number',
+        'customers_name',
+        'customers_phone',
+        'city__name',
+        'address',
+        'elements__name',
+        'source__name',
+    )
     list_filter = ('city__name',)
     ordering = ('date',)
     fieldsets: list[tuple[str, object]] = [
@@ -162,6 +172,7 @@ class WorkOrderAdmin(OrderAdmin):
 
 
 class StatusOrderAdmin(OrderAdmin):
+    model = None
     readonly_fields = (
         'source',
         'number',
@@ -188,7 +199,8 @@ class StatusOrderAdmin(OrderAdmin):
         'address',
         'customers_phone',
         'customers_name',
-        'timings',
+        'date_from',
+        'date_to',
         'price',
         'delivery_price',
         'delivery_position',
@@ -204,6 +216,21 @@ class StatusOrderAdmin(OrderAdmin):
 
     def has_delete_permission(self, request: WSGIRequest, obj: Order or None = None) -> bool:
         return False
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if not request.user.has_perm(
+                self.model._meta.app_label + '.' + apps.get_model(
+                    'auth',
+                    'Permission'
+                ).objects.get(
+                    content_type__model=self.model._meta.model_name,
+                    codename__startswith='change_'
+                ).codename
+        ):
+            actions.pop('change_status')
+            actions.pop('return_order')
+        return actions
 
     @admin.action(description='Вернуть заказ(ы)')
     def return_order(
