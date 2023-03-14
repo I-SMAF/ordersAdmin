@@ -135,7 +135,7 @@ JAZZMIN_SETTINGS = {
     # "hide_apps": ["auth"],
 
     # Hide these models when generating side menu (e.g auth.user)
-    "hide_models": [],
+    # "hide_models": ["main.sentorder"],
 
     # List of apps (and/or models) to base side menu ordering off of (does not need to contain all apps/models)
     # "order_with_respect_to": ["auth", "books", "books.author", "books.book"],
@@ -158,6 +158,7 @@ JAZZMIN_SETTINGS = {
         "main.checkingorder": "fas fa-clipboard-check",
         "main.complianceorder": "fas fa-traffic-light",
         "main.loadingorder": "fas fa-shipping-fast",
+        "main.departure": "fas fa-check",
         "main.sentorder": "fas fa-check",
         "main.source": "fas fa-people-arrows",
         "main.city": "fas fa-city",
@@ -170,6 +171,7 @@ JAZZMIN_SETTINGS = {
         'main.checkingorder',
         'main.complianceorder',
         'main.loadingorder',
+        'main.departure',
         'main.sentorder',
         'main.source',
         'main.city',

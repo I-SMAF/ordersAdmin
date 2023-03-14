@@ -1,0 +1,29 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <h3>В выезд будут добавлены следующие позиции:</h3>
+        {% for item in items %}
+            <h5 class="m-1">Заказ: {{ item.source }} {{ item.number }} {{ item.city }}</h5>
+        {% endfor %}
+        <div style="margin-bottom: 1rem; margin-top: 1rem;">
+
+            <h3>Создание выезда:</h3>
+            {% for widget in form %}
+                {% if widget.label != 'hidden' %}
+                    <div style=" margin-top: 1rem;">
+                        {{ widget.label }}:
+                        {{ widget }}
+                        <br>
+                    </div>
+                {% else %}
+                    {{ widget }}
+                {% endif %}
+            {% endfor %}
+        </div>
+        <br>
+        <input type="hidden" name="action" value="change_status"/>
+        <input type="submit" class="btn btn-xs btn-info" name="apply" value="Сохранить"/>
+    </form>
+{% endblock %}

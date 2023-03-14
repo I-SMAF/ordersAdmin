@@ -55,6 +55,31 @@ class Status(models.TextChoices):
     SENT = 'sent', 'Отправлено'
 
 
+class Departure(models.Model):
+    class Meta:
+        verbose_name = 'Отправлено (Выезд)'
+        verbose_name_plural = 'Отправлено (Выезды)'
+        ordering = ['date']
+
+    invoice_cost = models.PositiveIntegerField(
+        verbose_name='Стоимость по накладной',
+        default=0,
+        null=True,
+        blank=True
+    )
+    date = models.DateField(
+        verbose_name='Дата выезда',
+        null=True,
+        blank=True
+    )
+    direction = models.CharField(
+        verbose_name='Направление выезда',
+        max_length=256,
+        null=True,
+        blank=True
+    )
+
+
 class Order(models.Model):
     """
     Модель заказа
@@ -63,6 +88,7 @@ class Order(models.Model):
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
+        ordering = ['id']
 
     status = models.CharField(
         verbose_name='Статус заказа',
@@ -103,28 +129,28 @@ class Order(models.Model):
         verbose_name='Конечная дата заказа',
     )
     date_from = models.TimeField(
-        verbose_name='Дата заказа от',
+        verbose_name='Время заказа от',
         null=True,
         blank=True,
     )
     date_to = models.TimeField(
-        verbose_name='Дата заказа до',
+        verbose_name='Время заказа до',
         null=True,
         blank=True,
     )
-    delivery_price = models.PositiveIntegerField(  # null_by_design
+    delivery_price = models.PositiveIntegerField(
         verbose_name='Цена доставки',
         default=0,
         null=True,
         blank=True
     )
-    delivery_position = models.SmallIntegerField(  # null_by_design
+    delivery_position = models.SmallIntegerField(
         verbose_name='Позиция погрузки',
         default=0,
         null=True,
         blank=True
     )
-    order_comment = models.TextField(  # null_by_design
+    order_comment = models.TextField(
         verbose_name='Комментарий заказа',
         null=True,
         blank=True
@@ -133,6 +159,14 @@ class Order(models.Model):
         verbose_name='Кол-во логистических мест',
         null=True,
         blank=True
+    )
+    departure = models.ForeignKey(
+        to=Departure,
+        on_delete=models.CASCADE,
+        verbose_name='Выезд',
+        null=True,
+        blank=True,
+        related_name='orders'
     )
 
     def __str__(self) -> str:
@@ -205,7 +239,7 @@ class SentOrder(Order):
     class Meta:
         proxy = True
         verbose_name = 'Заказ отправлено'
-        verbose_name_plural = f'Отправлено'
+        verbose_name_plural = f'Отправлено (Заказы)'
 
 
 class Element(models.Model):

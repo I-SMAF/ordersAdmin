@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.safestring import mark_safe
 
-from apps.main.models.models import Status
+from apps.main.models.models import Status, Departure
 
 
 class ChangeStatusForm(forms.Form):
@@ -16,6 +16,17 @@ class ChangeStatusForm(forms.Form):
         ),
         label=mark_safe('Комментарий')
     )
+
+
+class CreateDepartureForm(forms.ModelForm):
+    _selected_action = forms.CharField(
+        widget=forms.MultipleHiddenInput,
+        label='hidden'
+    )
+
+    class Meta:
+        model = Departure
+        fields = '__all__'
 
 
 class ChangeGlobalStatusForm(ChangeStatusForm):

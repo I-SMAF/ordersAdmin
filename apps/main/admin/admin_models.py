@@ -1,14 +1,27 @@
+import datetime
+
 from django.apps import apps
 from django.contrib import admin
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import QuerySet
-from django.forms import Form
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 
-from apps.main.admin.forms import ChangeStatusForm
-from apps.main.models.models import Element, Order, StatusStory, Source, CheckingOrder, ComplianceOrder, LoadingOrder, \
-    ReturnOrder, Status, City, SentOrder, WorkOrder
+from apps.main.admin.forms import ChangeStatusForm, CreateDepartureForm
+from apps.main.models.models import (
+    Element,
+    Order,
+    StatusStory,
+    Source,
+    CheckingOrder,
+    ComplianceOrder,
+    LoadingOrder,
+    Status,
+    City,
+    SentOrder,
+    WorkOrder,
+    Departure
+)
 
 
 class StatusStoryInline(admin.TabularInline):
@@ -25,7 +38,7 @@ class StatusStoryInline(admin.TabularInline):
     def has_delete_permission(self, request: WSGIRequest, obj: StatusStory or None = None) -> bool:
         return False
 
-    def has_change_permissionn(self, request: WSGIRequest, obj: StatusStory or None = None) -> bool:
+    def has_change_permission(self, request: WSGIRequest, obj: StatusStory or None = None) -> bool:
         return False
 
 
@@ -35,6 +48,71 @@ class ElementInline(admin.TabularInline):
     extra = 0
     show_change_link = False
     fields = ('amount', 'name', 'weight', 'price')
+
+
+class OrderInline(admin.TabularInline):
+    model = Order
+    can_delete = False
+    show_change_link = False
+    extra = 0
+    ordering = ('date_to',)
+    readonly_fields = (
+        'weight',
+        'timings',
+        'price',
+    )
+    fields = (
+        'number',
+        'source',
+        'address',
+        'timings',
+        'delivery_price',
+        'price',
+        'logic_slots',
+        'weight',
+    )
+
+    def has_add_permission(self, request: WSGIRequest, obj: StatusStory) -> bool:
+        return False
+
+    def has_delete_permission(self, request: WSGIRequest, obj: Order or None = None) -> bool:
+        return False
+
+    def has_change_permission(self, request: WSGIRequest, obj: Order or None = None) -> bool:
+        return False
+
+    @admin.display(
+        description="Общий вес",
+    )
+    def weight(self, obj: Order) -> str:
+        result = str(sum(
+            map(lambda element: element[0] * element[1], list(obj.elements.values_list('weight', 'amount')))
+        )).replace('.', ',')
+        return result if result != '0' else '0,0'
+
+    @admin.display(
+        description="Цена товаров",
+    )
+    def price(self, obj: Order) -> str:
+        result = str(sum(
+            map(lambda element: element[0] * element[1], list(obj.elements.values_list('price', 'amount')))
+        )).replace('.', ',')
+
+        return result if result != '0' else '0,0'
+
+    @admin.display(
+        description="Вилка времени",
+    )
+    def timings(self, obj: Order) -> str:
+        if obj.date_from and obj.date_from:
+            return f"{obj.date_from} - {obj.date_to}"
+        return ""
+
+    @admin.display(
+        description="Что в заказе",
+    )
+    def elements_names(self, obj: Order) -> str:
+        return ', '.join(obj.elements.values_list('name', flat=True))
 
 
 class ElementViewInline(ElementInline):
@@ -292,7 +370,6 @@ class StatusOrderAdmin(OrderAdmin):
             return HttpResponseRedirect(request.get_full_path())
 
         if not forms:
-            print(request.POST)
             for element in request.POST.getlist('_selected_action'):
                 forms.append([
                     ChangeStatusForm(
@@ -349,9 +426,83 @@ class LoadingOrderAdmin(StatusOrderAdmin):
     status = Status.LOADING
     next_status = Status.SENT
 
+    @admin.action(description=f'Сменить статус')
+    def change_status(
+            modeladmin,
+            request: WSGIRequest,
+            queryset: QuerySet[Order]
+    ) -> HttpResponseRedirect or HttpResponse:
+        form = None
+        if 'apply' in request.POST:
+            print(request.POST)
+            departure = Departure.objects.create(
+                direction=request.POST.getlist('direction')[0],
+                invoice_cost=request.POST.getlist('invoice_cost')[0],
+                date=datetime.datetime.strptime(request.POST.getlist('date')[0], '%d.%m.%Y').date(),
+            )
+            departure.orders.set(Order.objects.filter(pk__in=request.POST.getlist('_selected_action')))
+            for order in Order.objects.filter(pk__in=request.POST.getlist('_selected_action')):
+                order.status = modeladmin.next_status
+                order.save()
+                status_story = StatusStory(
+                    status=modeladmin.next_status,
+                    order=order,
+                    order_comment=f"Добавлен в выезд от {departure.date}, по направлению {departure.direction}")
+                status_story.save()
+            result = ', '.join(
+                Order.objects.filter(pk__in=request.POST.getlist('_selected_action')).values_list('number', flat=True))
+            modeladmin.message_user(
+                request,
+                f"Заказы: ({result}) добавлены  в выезд от {departure.date}, по направлению {departure.direction}.")
+            return HttpResponseRedirect(request.get_full_path())
+
+        if not form:
+            form = CreateDepartureForm(
+                initial={'_selected_action': request.POST.getlist('_selected_action'), 'date': datetime.date.today(), })
+
+        return render(request, 'create_departure.html',
+                      {'items': queryset, 'form': form, 'title': u'Изменение категории'})
+
 
 @admin.register(SentOrder)
-class SentOrderAdmin(StatusOrderAdmin):
+class SentOrderAdminOld(StatusOrderAdmin):
     status = Status.SENT
     next_status = Status.SENT
     actions = None
+
+
+@admin.register(Departure)
+class SentOrderAdmin(admin.ModelAdmin):
+    search_fields = ('orders__number', 'orders__address', 'orders__customers_name')
+    list_filter = ('direction', 'orders__source')
+    ordering = ('date',)
+    fields = ('invoice_cost', 'date', 'direction')
+    readonly_fields = fields
+    list_display = ('date', 'direction', 'invoice_cost', 'price', 'delivery_price')
+    list_display_links = list_display
+    inlines = (OrderInline,)
+
+    @admin.display(
+        description="Цена товаров",
+    )
+    def price(self, obj: Departure) -> str:
+        result = 0.0
+        for order in obj.orders.all():
+            result += sum(
+                map(lambda element: element[0] * element[1], list(order.elements.values_list('price', 'amount')))
+            )
+        result = str(result).replace('.', ',')
+        return result if result != '0' else '0,0'
+
+    @admin.display(
+        description="Цена доставки",
+    )
+    def delivery_price(self, obj: Departure) -> str:
+        result = str(sum(obj.orders.values_list('delivery_price', flat=True))).replace('.', ',')
+        return result if result != '0' else '0,0'
+
+    def has_add_permission(self, request: WSGIRequest) -> bool:
+        return False
+
+    def has_delete_permission(self, request: WSGIRequest, obj: Departure or None = None) -> bool:
+        return False
