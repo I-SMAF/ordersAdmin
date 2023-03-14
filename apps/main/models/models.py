@@ -96,6 +96,10 @@ class Order(models.Model):
         choices=Status.choices,
         default=Status.CHECKING
     )
+    is_complaint = models.BooleanField(
+        verbose_name='Рекламация',
+        default=False
+    )
     number = models.CharField(
         verbose_name='Номер заказа',
         max_length=256

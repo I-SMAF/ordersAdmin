@@ -6,6 +6,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import QuerySet
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
+from django.utils.html import format_html
 
 from apps.main.admin.forms import ChangeStatusForm, CreateDepartureForm
 from apps.main.models.models import (
@@ -165,6 +166,7 @@ class OrderAdmin(admin.ModelAdmin):
             {
                 'fields':
                     (
+                        'is_complaint',
                         'source',
                         'number',
                         'customers_name',
@@ -229,6 +231,22 @@ class OrderAdmin(admin.ModelAdmin):
     )
     def elements_names(self, obj: Order) -> str:
         return ', '.join(obj.elements.values_list('name', flat=True))
+
+    def changelist_view(self, request, *args, **kwargs):
+        response = super().changelist_view(request, *args, **kwargs)
+        render = response.rendered_content
+        edited = False
+        for index, obj in enumerate(response.context_data['cl'].result_list):
+            if obj.is_complaint:
+                edited = True
+                row_element = response.rendered_content.split('<tr')[index + 2]
+                print(row_element)
+                colored_row_element = '<tr'+row_element.replace('<a', '<a style="color: #f80 !important;"')
+                render = render.replace(row_element, colored_row_element)
+        if edited:
+            return HttpResponse(render)
+
+        return response
 
 
 @admin.register(WorkOrder)
