@@ -154,6 +154,9 @@ class OrderAdmin(admin.ModelAdmin):
         'elements__name',
         'source__name',
     )
+    search_help_text = (
+        'Поиск осуществляется по полям: Номер, Адрес, Имя заказчика, Номер телефона заказчика, Название товара, Источник, Город'
+    )
     list_filter = ('city__name',)
     ordering = ('date',)
     fieldsets: list[tuple[str, object]] = [
@@ -474,6 +477,7 @@ class SentOrderAdminOld(StatusOrderAdmin):
 @admin.register(Departure)
 class SentOrderAdmin(admin.ModelAdmin):
     search_fields = ('orders__number', 'orders__address', 'orders__customers_name')
+    search_help_text = 'Поиск осуществляется по полям заказов: Номер, Адрес, Имя заказчика'
     list_filter = ('direction', 'orders__source')
     ordering = ('date',)
     fields = ('invoice_cost', 'date', 'direction')
