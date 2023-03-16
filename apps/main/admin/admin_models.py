@@ -234,8 +234,8 @@ class OrderAdmin(admin.ModelAdmin):
 
     def changelist_view(self, request, *args, **kwargs):
         response = super().changelist_view(request, *args, **kwargs)
-        if request.GET:
-            render = response.rendered_content
+        rendered_content = getattr(response, 'rendered_content', None)
+        if rendered_content:
             edited = False
             for index, obj in enumerate(response.context_data['cl'].result_list):
                 if obj.is_complaint:
@@ -243,9 +243,9 @@ class OrderAdmin(admin.ModelAdmin):
                     row_element = response.rendered_content.split('<tr')[index + 2]
                     print(row_element)
                     colored_row_element = '<tr'+row_element.replace('<a', '<a style="color: #f80 !important;"')
-                    render = render.replace(row_element, colored_row_element)
+                    rendered_content = rendered_content.replace(row_element, colored_row_element)
             if edited:
-                return HttpResponse(render)
+                return HttpResponse(rendered_content)
 
         return response
 
