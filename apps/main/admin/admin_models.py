@@ -241,7 +241,6 @@ class OrderAdmin(admin.ModelAdmin):
                 if obj.is_complaint:
                     edited = True
                     row_element = response.rendered_content.split('<tr')[index + 2]
-                    print(row_element)
                     colored_row_element = '<tr'+row_element.replace('<a', '<a style="color: #f80 !important;"')
                     rendered_content = rendered_content.replace(row_element, colored_row_element)
             if edited:
@@ -344,7 +343,6 @@ class StatusOrderAdmin(OrderAdmin):
             count = 0
             for element in zip(request.POST.getlist('message'), request.POST.getlist('element')):
                 oreder = Order.objects.get(pk=element[-1])
-                print(oreder.__dict__)
                 oreder.status = Status.CHECKING
                 oreder.save()
                 status_story = StatusStory(status=Status.RETURN, order=oreder, order_comment=element[0])
@@ -354,7 +352,6 @@ class StatusOrderAdmin(OrderAdmin):
             return HttpResponseRedirect(request.get_full_path())
 
         if not forms:
-            print(request.POST)
             for element in request.POST.getlist('_selected_action'):
                 forms.append([
                     ChangeStatusForm(
@@ -375,8 +372,6 @@ class StatusOrderAdmin(OrderAdmin):
             queryset: QuerySet[Order]
     ) -> HttpResponseRedirect or HttpResponse:
         forms = []
-
-        print(request.POST)
 
         if 'apply' in request.POST:
             count = 0
@@ -456,7 +451,6 @@ class LoadingOrderAdmin(StatusOrderAdmin):
     ) -> HttpResponseRedirect or HttpResponse:
         form = None
         if 'apply' in request.POST:
-            print(request.POST)
             departure = Departure.objects.create(
                 direction=request.POST.getlist('direction')[0],
                 invoice_cost=request.POST.getlist('invoice_cost')[0],
