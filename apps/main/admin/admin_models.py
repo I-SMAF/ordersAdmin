@@ -235,7 +235,7 @@ class OrderAdmin(admin.ModelAdmin):
     def changelist_view(self, request, *args, **kwargs):
         response = super().changelist_view(request, *args, **kwargs)
         rendered_content = getattr(response, 'rendered_content', None)
-        if rendered_content:
+        if rendered_content and 'cl' in response.context_data:
             edited = False
             for index, obj in enumerate(response.context_data['cl'].result_list):
                 if obj.is_complaint:
