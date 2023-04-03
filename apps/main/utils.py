@@ -1,4 +1,5 @@
 import io
+import typing
 
 import unicodedata
 import string
@@ -28,7 +29,12 @@ def clean_filename(filename: str, whitelist: str = valid_filename_chars, replace
     return cleaned_filename[:char_limit]
 
 
-def generate_xlsx(*, name: str | None = None, header: list | None = None, values: list | None = None) -> bytes:
+def generate_xlsx(
+        *,
+        name: typing.Union[str, None] = None,
+        header: typing.Union[list, None] = None,
+        values: typing.Union[list, None] = None
+) -> bytes:
     extra_row = 0
     column = 0
     output: io.BytesIO = io.BytesIO()
