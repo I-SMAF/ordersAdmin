@@ -3,10 +3,9 @@ import datetime
 from django.apps import apps
 from django.contrib import admin
 from django.core.handlers.wsgi import WSGIRequest
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Model
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
-from django.utils.html import format_html
 
 from apps.main.admin.forms import ChangeStatusForm, CreateDepartureForm
 from apps.main.models.models import (
@@ -23,6 +22,7 @@ from apps.main.models.models import (
     WorkOrder,
     Departure
 )
+from apps.main.utils import clean_filename, generate_xlsx
 
 
 class StatusStoryInline(admin.TabularInline):
@@ -109,11 +109,30 @@ class OrderInline(admin.TabularInline):
             return f"{obj.date_from} - {obj.date_to}"
         return ""
 
-    @admin.display(
-        description="Что в заказе",
-    )
-    def elements_names(self, obj: Order) -> str:
-        return ', '.join(obj.elements.values_list('name', flat=True))
+    def get_display(self, obj: Order) -> list:
+        fields = []
+        for field_name in self.fields:
+            try:
+                value = getattr(obj, field_name)
+            except AttributeError:
+                value = getattr(self, field_name)(obj)
+            fields.append(value)
+        return fields
+
+    def get_names(self, qs: QuerySet[Order]) -> list:
+        names = []
+        for field_name in self.fields:
+            try:
+                names.append(getattr(qs.model, field_name).field.verbose_name)
+            except AttributeError:
+                names.append(getattr(self, field_name).short_description)
+        return names
+
+    def get_real_values(self, qs: QuerySet[Order]) -> list:
+        data = []
+        for obj in qs:
+            data.append(self.get_display(obj))
+        return data
 
 
 class ElementViewInline(ElementInline):
@@ -241,7 +260,7 @@ class OrderAdmin(admin.ModelAdmin):
                 if obj.is_complaint:
                     edited = True
                     row_element = response.rendered_content.split('<tr')[index + 2]
-                    colored_row_element = '<tr'+row_element.replace('<a', '<a style="color: #f80 !important;"')
+                    colored_row_element = '<tr' + row_element.replace('<a', '<a style="color: #f80 !important;"')
                     rendered_content = rendered_content.replace(row_element, colored_row_element)
             if edited:
                 return HttpResponse(rendered_content)
@@ -489,6 +508,7 @@ class SentOrderAdminOld(StatusOrderAdmin):
 
 @admin.register(Departure)
 class SentOrderAdmin(admin.ModelAdmin):
+    change_form_template = 'download_xlsx.html'
     search_fields = ('orders__number', 'orders__address', 'orders__customers_name')
     search_help_text = 'Поиск осуществляется по полям заказов: Номер, Адрес, Имя заказчика'
     list_filter = ('direction', 'orders__source')
@@ -523,3 +543,29 @@ class SentOrderAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request: WSGIRequest, obj: Departure or None = None) -> bool:
         return False
+
+    def response_change(self, request: WSGIRequest, obj: Departure) -> HttpResponse:
+        if request.POST.get('download') == 'save_to_file':
+            data = self.inlines[0](parent_model=obj, admin_site=self.admin_site).get_real_values(
+                qs=obj.orders.all()
+            )
+            fields_names = self.inlines[0](parent_model=obj, admin_site=self.admin_site).get_names(
+                qs=obj.orders.all()
+            )
+            values = [[field if not isinstance(field, Model) else field.name for field in line] for line in data]
+            name = clean_filename(f'{obj.direction}_{obj.date.strftime("%m_/%d_/%Y")}')
+            content = generate_xlsx(
+                name=name,
+                header=fields_names,
+                values=values
+            )
+            response = HttpResponse(
+                content=content,
+                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            )
+            response['Access-Control-Expose-Headers'] = 'Content-Disposition, Content-Type, Filename'
+            response['Content-Disposition'] = f'attachment; filename={name + ".xlsx"}'
+            response['Filename'] = name + '.xlsx'
+
+            return response
+        return super().response_change(request, obj)
